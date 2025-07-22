@@ -13,37 +13,28 @@ namespace ProcessStarter
         Process process = new Process();
         Opener s = new Opener();
 
-        List<string> domains = s.fileOpen();
+        List<string> domains;
+
+
+
+        public string GetDomains()
+        {
+            return string.Join(" ", domains.Select(d => $"\"{d}\""));
+        }
 
         public string chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-
-        public string browser;
-        public List<string> targets;
-
-        public string BrowserLocator()
-        {
-            try
-            {
-                Console.Write("hello world");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("hello world" + e.Message);
-            }
-
-            return "hello world";
-        }
 
 
 
         public void OperaOpener()
         {
-            string url = "https://15min.lt";
+            domains = s.fileOpen();
+
             try
             {
                 process.StartInfo.FileName = @"C:\Users\Vytautas\AppData\Local\Programs\Opera\opera.exe";
                 process.StartInfo.UseShellExecute = true;
-                System.Diagnostics.Process.Start(process.StartInfo.FileName, url);
+                Process.Start(process.StartInfo.FileName, GetDomains());
             }
             catch (Exception e)
             {

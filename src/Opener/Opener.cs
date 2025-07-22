@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using ProcessStarter;
+using path;
 
 namespace read
 {
@@ -11,9 +12,10 @@ namespace read
     public class Opener
     {
         List<string> domains = new List<string>();
+
+
         public List<string> fileOpen()
         {
-
             string line;
             try
             {
@@ -45,8 +47,14 @@ namespace read
         public static void Main()
         {
             BrowserHandler opera = new BrowserHandler();
-            
+
             opera.OperaOpener();
+
+            Browsers check = new Browsers();
+
+            check.GetEdge();
+
+            
 
             
 
