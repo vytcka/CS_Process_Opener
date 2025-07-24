@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using ProcessStarter;
 using path;
 using System.Runtime.Versioning;
+using System.Threading.Channels;
 
 namespace read
 {
@@ -46,23 +47,33 @@ namespace read
 
 
 
+        public string regValueToString(string regValue)
+        {
+            int firstQuote = regValue.IndexOf('"');
+            int secondQuote = regValue.IndexOf('"', firstQuote + 1);
+
+            if (firstQuote != -1 && secondQuote != -1)
+            {
+                string exePath = regValue.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
+        
+                return exePath;
+            }
+            else
+            {
+                Console.WriteLine("No quoted path found.");
+                return "";
+            }
+    }
+
+
+
+
         public static void Main()
         {
-
-
+            Opener s = new Opener();
             Browsers check = new Browsers();
 
-            Dictionary<String, object> s = check.getRegistrySubKeys();
-
-            foreach (var ele in s)
-            {
-                Console.WriteLine($"Key: {ele.Key}, Value: {ele.Value}");
-            }
-
-            
-
-            
-
+            string path = check.getMozillaReg();
         }
 
     }
