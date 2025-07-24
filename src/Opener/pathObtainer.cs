@@ -1,28 +1,74 @@
 using System;
+using System.ComponentModel;
+using System.Linq.Expressions;
+using System.Runtime.Versioning;
+using System.Runtime.InteropServices.Marshalling;
+using System.Security;
 using Microsoft.Win32;
+
 
 namespace path
 {
-
+    [SupportedOSPlatform("windows")]
     public class Browsers
     {
 
-        public void GetEdge()
+
+        //path for brave, chrome: found in: Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\*
+
+
+
+        public Dictionary<string, object> getRegistrySubKeys()
         {
-            string path = "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
-            string valname = "MicrosoftEdgeAutoLaunch_B9E62D1FAC80BA0C04C39030B772A86B";
+            var valsnames = new Dictionary<string, object>();
+            const string REGISTRY_ROOT = @"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
 
-            object testval = Registry.GetValue(path, valname, null);
 
-            if (testval != null)
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(REGISTRY_ROOT))
             {
-                Console.WriteLine("val :" + testval.ToString());
+                if (key != null)
+                {
+                    try
+                    {
+                        string[] val_names = key.GetValueNames();
+                        foreach (string s in val_names)
+                        {
+                            Console.WriteLine(s);
+                            if (s.Contains("MicrosoftEdgeAutoLaunch%"))
+                            {
+                                try
+                                {
+                                    string[] subKey_vals = key.GetSubKeyNames();
+                                }
+                                catch (SecurityException e)
+                                {
+                                    Console.WriteLine("you don't have the premission to read the subkey" + e.Message);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("error:" + e.Message);
+                    }
+                }
             }
-            else
-            {
-                Console.WriteLine("nothing was found");
-            }
+            return valsnames;
         }
 
+
+
+
+
+        public void GetEdge()
+        {
+            RegistryKey rk = Registry.LocalMachine;
+            string[] names = rk.GetSubKeyNames();
+
+            foreach (string s in names)
+            {
+                Console.WriteLine(s);
+            }
+        }
     }
 }

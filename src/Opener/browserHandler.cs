@@ -4,10 +4,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using read;
+using System.Runtime.Versioning;
 
 namespace ProcessStarter
 {
-
+[SupportedOSPlatform("windows")]
     public class BrowserHandler
     {
         Process process = new Process();

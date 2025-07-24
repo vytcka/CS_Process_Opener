@@ -4,13 +4,15 @@ using System.IO;
 using System.Collections.Generic;
 using ProcessStarter;
 using path;
+using System.Runtime.Versioning;
 
 namespace read
 {
 
-
+    [SupportedOSPlatform("windows")]
     public class Opener
     {
+        string domainList = "../../../../../domain.txt";
         List<string> domains = new List<string>();
 
 
@@ -19,7 +21,7 @@ namespace read
             string line;
             try
             {
-                StreamReader sr = new StreamReader("../../../../../domain.txt");
+                StreamReader sr = new StreamReader(domainList);
                 line = sr.ReadLine();
                 domains.Add(line);
                 while (line != null)
@@ -46,13 +48,16 @@ namespace read
 
         public static void Main()
         {
-            BrowserHandler opera = new BrowserHandler();
 
-            opera.OperaOpener();
 
             Browsers check = new Browsers();
 
-            check.GetEdge();
+            Dictionary<String, object> s = check.getRegistrySubKeys();
+
+            foreach (var ele in s)
+            {
+                Console.WriteLine($"Key: {ele.Key}, Value: {ele.Value}");
+            }
 
             
 
