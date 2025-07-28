@@ -1,13 +1,7 @@
-﻿
-using System;
-using System.IO;
-using System.Collections.Generic;
-using ProcessStarter;
-using path;
-using System.Runtime.Versioning;
-using System.Threading.Channels;
+﻿using System.Runtime.Versioning;
 
-namespace read
+
+namespace Read
 {
 
     [SupportedOSPlatform("windows")]
@@ -17,7 +11,7 @@ namespace read
         List<string> domains = new List<string>();
 
 
-        public List<string> fileOpen()
+        public List<string> FileOpen()
         {
             string line;
             try
@@ -63,18 +57,6 @@ namespace read
                 Console.WriteLine("No quoted path found.");
                 return "";
             }
-    }
-
-
-
-
-        public static void Main()
-        {
-            Opener s = new Opener();
-            Browsers check = new Browsers();
-
-            string path = check.getMozillaReg();
         }
-
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.Win32;
 using System.Reflection.Metadata.Ecma335;
 
 
-namespace path
+namespace Path
 {
     [SupportedOSPlatform("windows")]
     public class Browsers
@@ -190,7 +190,8 @@ namespace path
             @"C:\Program Files\Opera\launcher.exe",
             @"C:\Program Files (x86)\Opera\launcher.exe",
             $@"C:\Users\{username}\AppData\Local\Programs\Opera\launcher.exe",
-            $@"C:\Users\{username}\AppData\Local\Opera Software\Opera Stable\opera.exe"
+            $@"C:\Users\{username}\AppData\Local\Opera Software\Opera Stable\opera.exe",
+            $@"C:\Users\{username}\AppData\Local\Programs\Opera\opera.exe",
         };
         
             foreach (string path in pathArr)

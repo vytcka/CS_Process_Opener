@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
-using read;
+using Read;
 using System.Runtime.Versioning;
 
 namespace ProcessStarter
@@ -12,10 +12,14 @@ namespace ProcessStarter
     public class BrowserHandler
     {
         Process process = new Process();
-        Opener s = new Opener();
+        Opener s;
+    List<string> domains;
 
-        List<string> domains;
-
+        public BrowserHandler()
+        {
+        s = new Opener();
+        domains = s.FileOpen();
+        }
 
 
         public string GetDomains()
@@ -23,23 +27,23 @@ namespace ProcessStarter
             return string.Join(" ", domains.Select(d => $"\"{d}\""));
         }
 
-        public string chromePath = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
-
-
-
-        public void OperaOpener()
+        public void BrowserDomainOpener(string browser)
         {
-            domains = s.fileOpen();
-
             try
             {
-                process.StartInfo.FileName = @"C:\Users\Vytautas\AppData\Local\Programs\Opera\opera.exe";
+                process.StartInfo.FileName = @browser;
                 process.StartInfo.UseShellExecute = true;
                 Process.Start(process.StartInfo.FileName, GetDomains());
             }
             catch (Exception e)
             {
+                foreach (string s in domains)
+                {
+                    Console.WriteLine(s);
+                }
                 Console.WriteLine("Error:" + e.Message);
+                Console.WriteLine(browser);
+                
             }
         }
 
