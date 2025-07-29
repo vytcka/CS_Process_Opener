@@ -4,13 +4,15 @@ using Path;
 using Read;
 using System.Runtime.Versioning;
 using ProcessStarter;
+using Emulator;
 
 [SupportedOSPlatform("windows")]
 class MainLauncher
 {
-    public static void Main()
+    static async Task Main(string[] args)
+
     {
-        Browsers browserPaths = new Browsers();
+        /*Browsers browserPaths = new Browsers();
         BrowserHandler browserOpener = new BrowserHandler();
         Opener s = new Opener();
 
@@ -38,8 +40,15 @@ class MainLauncher
         browserOpener.BrowserDomainOpener(mozillaPath);
         browserOpener.BrowserDomainOpener(chromePath);
         browserOpener.BrowserDomainOpener(operaPath);
-    
+    */
+        Console.Write("hello world");
 
-        
+        var vars = new PlaywrightEmulator();
+
+        await vars.EmulatorAsync();
+
+        Opener processedDom = new Opener();
+
+        processedDom.RegexMatcher();
         }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Versioning;
+using System.Text.RegularExpressions;
 
 
 namespace Read
@@ -39,6 +40,46 @@ namespace Read
             return domains;
         }
 
+        public List<string> RegexMatcher()
+        {
+            string pattern = @"(?m)http(?:s?):\/\/.*?([^\.\/]+?\.[^\.]+?)(?:\/|$)";
+
+            List<string> UnporcessedDoms = FileOpen();
+            List<string> ProcessedDoms = new List<string>();
+
+
+            foreach (string UnprocessedDom in UnporcessedDoms)
+            {
+                if (UnprocessedDom != null)
+                {
+                    MatchCollection matches = Regex.Matches(UnprocessedDom, pattern);
+
+                    foreach (Match match in matches)
+                    {
+                        Console.WriteLine(match.Groups[1].Value);
+                        ProcessedDoms.Add(match.Groups[1].Value);
+                    }
+
+                }
+            }
+            
+
+            return ProcessedDoms;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         public string regValueToString(string regValue)
@@ -49,7 +90,7 @@ namespace Read
             if (firstQuote != -1 && secondQuote != -1)
             {
                 string exePath = regValue.Substring(firstQuote + 1, secondQuote - firstQuote - 1);
-        
+
                 return exePath;
             }
             else
