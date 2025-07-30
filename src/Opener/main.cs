@@ -41,14 +41,13 @@ class MainLauncher
         browserOpener.BrowserDomainOpener(chromePath);
         browserOpener.BrowserDomainOpener(operaPath);
     */
-        Console.Write("hello world");
-
-        var vars = new PlaywrightEmulator();
-
-        await vars.EmulatorAsync();
+        //await vars.EmulatorAsync();
 
         Opener processedDom = new Opener();
 
-        processedDom.RegexMatcher();
+
+        //organizacija maine, turetu buti isdesti, kiek domenu idetoje kategorija ir hronologiskai isdelioti jas.
+
+        processedDom.FileOpen();
         }
 }
