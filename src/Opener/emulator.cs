@@ -36,7 +36,7 @@ namespace Emulator
             await using var browser = await playwright.Chromium.LaunchAsync(new() { Headless = true });
             var context = await browser.NewContextAsync();
             var page = await context.NewPageAsync();
-            await page.GotoAsync($"https://{domain}");
+            await page.GotoAsync($"{domain}");
         }
 
 

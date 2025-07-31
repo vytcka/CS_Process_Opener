@@ -7,6 +7,7 @@ using ProcessStarter;
 using Emulator;
 using System.Text;
 using System.Runtime.Intrinsics.Arm;
+using Microsoft.Playwright;
 
 
 [SupportedOSPlatform("windows")]
@@ -53,48 +54,65 @@ class MainLauncher
 
 
 
-        List<string> domains = processedDom.RegexMatcher();
+        List<string> domains = processedDom.FileOpen();
         List<string> results = new List<string>();
 
 
-        int counter = 0;
+        int counterPraleido = 0;
+        int counterNepraleido = 0;
+
         foreach (string domain in domains)
         {
             try
             {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
                 await tests.EmulatorAsync(domain);
                 Console.WriteLine("websaitas {0} praleistas", domain);
                 results.Add("Užkrovė");
+                counterPraleido++;
             }
             catch (Exception)
             {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine("websaitas {0} uzblokuotas", domain);
-                counter++;
                 results.Add("Nepraleido");
+                counterNepraleido++;
             }
-
-
+            finally
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
 
+        Console.ForegroundColor = ConsoleColor.White;
 
-        float num = ((float) counter/ domains.Count() ) * 100;
+        float numPraleido = ((float)counterPraleido / domains.Count()) * 100;
+        float numNepraleido = ((float)counterNepraleido / domains.Count()) * 100;
 
-
-        StringBuilder report = new StringBuilder();
-        report.AppendLine("=== Domenu blokavimo rezultatas ===");
-        report.AppendLine("Dabartinis Laikas: " + DateTime.Now);
-        report.AppendLine();
-
-
+        Console.WriteLine("\n=== Domenų blokavimo rezultatas ===");
+        Console.WriteLine("Dabartinis Laikas: " + DateTime.Now + "\n");
 
         for (int i = 0; i < domains.Count; i++)
         {
-            report.AppendLine($"- {domains[i]} ......... {results[i]}");
-        }
-        report.AppendLine();
-        report.AppendLine($"iš viso užblokavo {num}%");
+            if (results[i] == "Užkrovė")
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+            }
+            else if (results[i] == "Nepraleido")
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+            }
 
-        Console.WriteLine(report.ToString());
+
+            Console.WriteLine($"- {domains[i]} ......... {results[i]}");
+            Console.ForegroundColor = ConsoleColor.White;
+
+        }
+
+        Console.ForegroundColor = ConsoleColor.White;
+
+        Console.WriteLine($"\niš viso praleido svetainių: {numPraleido}%");
+        Console.WriteLine($"\niš viso užblokavo svetainių: {numNepraleido}%");        
     }
         
     
