@@ -3,6 +3,7 @@ using System;
 using Read;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 
 
@@ -16,27 +17,26 @@ namespace Emulator
         {
             Opener domainRetrieval = new Opener();
 
-            _domains = domainRetrieval.FileOpen();
+            _domains = domainRetrieval.RegexMatcher();
         }
 
-        public string domainList(int index)
+        public List<string> domainRetrieval()
         {
-            string val = _domains[index];
-            return val;
+            List<string> doms = _domains;
+            return doms;
         }
 
 
-        public async Task EmulatorAsync()
+        public async Task EmulatorAsync(string domain)
         {
-            Int32 length = _domains.Count;
-            Console.WriteLine(length);
+            
+    
             
             using var playwright = await Playwright.CreateAsync();
             await using var browser = await playwright.Chromium.LaunchAsync(new() { Headless = true });
             var context = await browser.NewContextAsync();
             var page = await context.NewPageAsync();
-            await page.GotoAsync("https://google.com");
-            Console.WriteLine(await page.TitleAsync());
+            await page.GotoAsync($"https://{domain}");
         }
 
 

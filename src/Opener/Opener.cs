@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System;
 using System.Security.Cryptography.X509Certificates;
 using System.ComponentModel.Design;
+using System.Collections.Generic;
 
 namespace Read
 {
@@ -12,36 +13,40 @@ namespace Read
     {
         string domainList = "../../../../../domain.txt";
         List<string> domains = new List<string>();
+        
 
+        
 
         public List<string> FileOpen()
         {
-            Dictionary<string, string> T_url = new Dictionary<string, string>();
+            List<string> domains = new List<string>();
 
-            T_url.Add("Pornogr", null);
-            T_url.Add("Erotik", null);
-            T_url.Add("Smurt", null);
-            T_url.Add("Lošim", null);
-            T_url.Add("ginkl", null);
-            T_url.Add("alkohol", null);
-            T_url.Add("natkotik", null);
-            T_url.Add("tabak", null);
-            T_url.Add("rasin", null);
-            T_url.Add("server", null);
+
+            List<string> domainTypes =
+            [
+                "Pornogr",
+                "Erotik",
+                "Smurt",
+                "Lošim",
+                "ginkl",
+                "alkohol",
+                "natkotik",
+                "tabak",
+                "rasin",
+                "server",
+            ];
+
 
 
             try
             {
                 StreamReader sr = new StreamReader(domainList);
                 string line;
-                bool processingDomains = false;
-                string activeDomainType = null;
-                uint counter = 0;
 
                 while ((line = sr.ReadLine()) != null)
                 {
-                    counter++;
-                    Console.WriteLine("the current line is: " + counter);
+  
+                    
                     /* we need to set a setter, being bool processingDomains = false;
 
                          for each domtype in T_url.key
@@ -94,42 +99,43 @@ namespace Read
                                 continue;
                             }
 
-
+                            //IMPLEMENT A DYNAMIC ONE FOR THE FUTURE, SINCE ITS DIFFICULT, AND I NEED TO UNDERSTAND HOW...
                         }
                     }
                     */
 
-                    foreach (string DomType in T_url.Keys)
+                    foreach (string DomType in domainTypes)
                     {
+                        
+
                         if (line.Contains(DomType))
                         {
                             //Console.WriteLine(DomType + " Tipas");
                             //Console.WriteLine (line + " kas linijoje");
-                            processingDomains = true;
+                            //processingDomains = true;
+
                             break;
-                            
+
                         }
 
-                        else if (processingDomains && !line.Contains(DomType, StringComparison.OrdinalIgnoreCase))
+                        else if (!line.Contains(DomType, StringComparison.OrdinalIgnoreCase))
                         {
 
+                            if (!domains.Contains(line))
+                            {
+                                domains.Add(line);
+                            }
                             //Console.WriteLine(DomType + " tipas");
-                            //Console.WriteLine(line + " linija.");
-                            T_url[DomType] = line;
+                                //Console.WriteLine(line + " linija.");
 
-                        }
+                            }
 
 
                     }
-                    
+
 
                 }
-                    foreach (KeyValuePair<string, string> kvp in T_url)
-                            {
-                                Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
-                            }
 
-                
                 sr.Close();
 
             }
@@ -137,10 +143,7 @@ namespace Read
             {
                 Console.WriteLine("The error: " + e.Message);
             }
-            finally
-            {
-                Console.WriteLine("Finished");
-            }
+ 
             return domains;
         }
 
@@ -165,7 +168,6 @@ namespace Read
 
                     foreach (Match match in matches)
                     {
-                        Console.WriteLine(match.Groups[1].Value);
                         ProcessedDoms.Add(match.Groups[1].Value);
                     }
 
@@ -175,21 +177,6 @@ namespace Read
 
             return ProcessedDoms;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public string regValueToString(string regValue)
         {

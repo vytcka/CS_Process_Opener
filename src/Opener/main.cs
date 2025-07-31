@@ -5,6 +5,9 @@ using Read;
 using System.Runtime.Versioning;
 using ProcessStarter;
 using Emulator;
+using System.Text;
+using System.Runtime.Intrinsics.Arm;
+
 
 [SupportedOSPlatform("windows")]
 class MainLauncher
@@ -42,12 +45,57 @@ class MainLauncher
         browserOpener.BrowserDomainOpener(operaPath);
     */
         //await vars.EmulatorAsync();
+        //organizacija maine, turetu buti isdesti, kiek domenu idetoje kategorija ir hronologiskai isdelioti jas.
 
         Opener processedDom = new Opener();
 
+        PlaywrightEmulator tests = new PlaywrightEmulator();
 
-        //organizacija maine, turetu buti isdesti, kiek domenu idetoje kategorija ir hronologiskai isdelioti jas.
 
-        processedDom.FileOpen();
+
+        List<string> domains = processedDom.RegexMatcher();
+        List<string> results = new List<string>();
+
+
+        int counter = 0;
+        foreach (string domain in domains)
+        {
+            try
+            {
+                await tests.EmulatorAsync(domain);
+                Console.WriteLine("websaitas {0} praleistas", domain);
+                results.Add("Užkrovė");
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("websaitas {0} uzblokuotas", domain);
+                counter++;
+                results.Add("Nepraleido");
+            }
+
+
         }
+
+
+        float num = ((float) counter/ domains.Count() ) * 100;
+
+
+        StringBuilder report = new StringBuilder();
+        report.AppendLine("=== Domenu blokavimo rezultatas ===");
+        report.AppendLine("Dabartinis Laikas: " + DateTime.Now);
+        report.AppendLine();
+
+
+
+        for (int i = 0; i < domains.Count; i++)
+        {
+            report.AppendLine($"- {domains[i]} ......... {results[i]}");
+        }
+        report.AppendLine();
+        report.AppendLine($"iš viso užblokavo {num}%");
+
+        Console.WriteLine(report.ToString());
+    }
+        
+    
 }
