@@ -1,9 +1,6 @@
 ﻿using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
-using System;
-using System.Security.Cryptography.X509Certificates;
-using System.ComponentModel.Design;
-using System.Collections.Generic;
+using System.IO;
 
 namespace Read
 {
@@ -11,148 +8,111 @@ namespace Read
     [SupportedOSPlatform("windows")]
     public class Opener
     {
-        string domainList = "../../../../../domain.txt";
-        List<string> domains = new List<string>();
-        
+        private readonly string liveConfigPath;
 
-        
+        string exeDirectory = AppContext.BaseDirectory;
+
+        string liveConfigFileName = "domains.txt";
+        string defaultConfigFileName = "domains.default.txt";
+
+        public Opener()
+        {
+            liveConfigPath = System.IO.Path.Combine(exeDirectory, liveConfigFileName);
+            string defaultConfigPath = System.IO.Path.Combine(exeDirectory, defaultConfigFileName);
+
+            
+            InitializeUserConfig(liveConfigPath, defaultConfigPath);
+        }
+
+        private void InitializeUserConfig(string userPath, string defaultPath)
+        {
+            if (!File.Exists(userPath))
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("neradome failo, 'domenai.txt', luktėlkite...");
+
+                if (File.Exists(defaultPath))
+                {
+                    Console.WriteLine("Kuremas naujas failas, 'domenai.txt'");
+                    Console.WriteLine($"You can now edit this file: {userPath}");
+
+                    File.Copy(defaultPath, userPath);
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("Pranešame, jog domenu failo nera direkotryjoje, pridedame txt faila");
+                    File.WriteAllText(userPath, "# Idėkite visus domėnus čia, svarbiausia jog domėnai būtų pilni; pvz: https://pavizdys.xyz");
+                }
+                Console.ResetColor();
+            }
+        }
 
         public List<string> FileOpen()
         {
-            List<string> domains = new List<string>();
+            // 1. Start with the robust structure: Check if the file exists.
+            if (!File.Exists(liveConfigPath))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"FATAL ERROR: Configuration file could not be found at '{liveConfigPath}'");
+                Console.ResetColor();
+                return new List<string>();
+            }
 
+            var domains = new List<string>();
 
-            List<string> domainTypes =
-            [
-                "Pornogr",
-                "Erotik",
-                "Smurt",
-                "Lošim",
-                "ginkl",
-                "alkohol",
-                "natkotik",
-                "tabak",
-                "rasin",
-                "server",
-            ];
-
-
+            var domainTypes = new List<string>
+        {
+            "Pornogr", "Erotik", "Smurt", "Lošim", "ginkl",
+            "alkohol", "natkotik", "tabak", "rasin", "server"
+        };
 
             try
             {
-                StreamReader sr = new StreamReader(domainList);
-                string line;
-
-                while ((line = sr.ReadLine()) != null)
+                // 4. Use a 'using' block to ensure the file is closed automatically.
+                using (var sr = new StreamReader(liveConfigPath))
                 {
-  
-                    
-                    /* we need to set a setter, being bool processingDomains = false;
-
-                         for each domtype in T_url.key
-                              if line != domtype[i]{
-                              contine
-                              }
-                              else{
-                              sr.readline() until
-                              \sr.readline() == !domtype[i]
-                              }
-
-                            state management:
-                        Before processing domains, you are in "searching for domain type" mode.
-
-                        Once you find a matching domain type, you switch processingDomains = true and set currentType = matchedKey.
-
-                        While processingDomains is true, you append URLs to T_url[currentType].
-
-                        If a new domain type is encountered (a line that matches another key), switch currentType and continue appending to that key.
-                     */
-
-                    /*if (processingDomains)
+                    string line;
+                    while ((line = sr.ReadLine()) != null)
                     {
-                        Console.WriteLine(activeDomainType + " processing domains is true");
-                        foreach (string domType in T_url.Keys)
+                        if (string.IsNullOrWhiteSpace(line))
+                        {
+                            continue;
+                        }
+
+                        bool isCategoryHeader = false;
+                        foreach (string domType in domainTypes)
                         {
                             if (line.Contains(domType, StringComparison.OrdinalIgnoreCase))
                             {
-                                activeDomainType = null;
-                                processingDomains = false;
+                                isCategoryHeader = true;
+                                break;
                             }
-                            else
+                        }
+
+                        if (!isCategoryHeader)
+                        {
+                            string cleanDomain = line.Trim();
+                            if (!domains.Contains(cleanDomain))
                             {
-                                continue;
+                                domains.Add(cleanDomain);
                             }
                         }
                     }
-                    else
-                    {
-                        Console.WriteLine(activeDomainType + " processing domains is false");
-                        foreach (string domType in T_url.Keys)
-                        {
-                            if (line.Contains(domType, StringComparison.OrdinalIgnoreCase))
-                            {
-                                activeDomainType = domType;
-                                processingDomains = true;
-                            }
-                            else
-                            {
-                                continue;
-                            }
-
-                            //IMPLEMENT A DYNAMIC ONE FOR THE FUTURE, SINCE ITS DIFFICULT, AND I NEED TO UNDERSTAND HOW...
-                        }
-                    }
-                    */
-
-                    foreach (string DomType in domainTypes)
-                    {
-                        
-
-                        if (line.Contains(DomType))
-                        {
-                            //Console.WriteLine(DomType + " Tipas");
-                            //Console.WriteLine (line + " kas linijoje");
-                            //processingDomains = true;
-
-                            break;
-
-                        }
-
-                        else if (!line.Contains(DomType, StringComparison.OrdinalIgnoreCase))
-                        {
-
-                            if (!domains.Contains(line))
-                            {
-                                domains.Add(line);
-                            }
-                            //Console.WriteLine(DomType + " tipas");
-                                //Console.WriteLine(line + " linija.");
-
-                            }
-
-
-                    }
-
-
                 }
-
-                sr.Close();
-
             }
             catch (Exception e)
             {
-                Console.WriteLine("The error: " + e.Message);
+                Console.WriteLine("Error while reading domains.txt: " + e.Message);
             }
- 
             return domains;
         }
-
         public List<string> RegexMatcher()
         {
             string pattern = @"(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})";
 
-        // Ideja, veiks pagal domenu tipa, ir privalumas butu chronologiskumas, nebent nuo iki veiks, tai jeigu
-        // this would work when iterating through dict keys.. so file open  has to be changed
+            // Ideja, veiks pagal domenu tipa, ir privalumas butu chronologiskumas, nebent nuo iki veiks, tai jeigu
+            // this would work when iterating through dict keys.. so file open  has to be changed
             List<string> UnporcessedDoms = FileOpen();
             List<string> ProcessedDoms = new List<string>();
 
@@ -161,7 +121,7 @@ namespace Read
             foreach (string UnprocessedDom in UnporcessedDoms)
             {
 
-                
+
                 if (UnprocessedDom != null)
                 {
                     MatchCollection matches = Regex.Matches(UnprocessedDom, pattern);
@@ -173,7 +133,7 @@ namespace Read
 
                 }
             }
-            
+
 
             return ProcessedDoms;
         }

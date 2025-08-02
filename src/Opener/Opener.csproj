@@ -16,19 +16,19 @@
 
    
   <ItemGroup>
-
     <Content Include="src\Opener\ms-playwright\**\*">
-      
-
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-
-
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      
-
       <Link>ms-playwright\%(RecursiveDir)%(Filename)%(Extension)</Link>
-      
     </Content>
   </ItemGroup>
+
+
+  <ItemGroup>
+    <None Update="domains.default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>

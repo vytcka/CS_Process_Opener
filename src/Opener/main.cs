@@ -8,14 +8,20 @@ using Emulator;
 using System.Text;
 using System.Runtime.Intrinsics.Arm;
 using Microsoft.Playwright;
+using System.Diagnostics;
+using Microsoft.Playwright.Transport.Protocol;
 
 
 [SupportedOSPlatform("windows")]
 class MainLauncher
 {
-    static async Task Main(string[] args)
 
+
+
+    static async Task Main(string[] args)
     {
+
+
         /*Browsers browserPaths = new Browsers();
         BrowserHandler browserOpener = new BrowserHandler();
         Opener s = new Opener();
@@ -54,9 +60,15 @@ class MainLauncher
 
 
 
+
         List<string> domains = processedDom.FileOpen();
         List<string> results = new List<string>();
 
+        if (domains.Count() == 0)
+        {
+            Console.WriteLine("Domenu sarasas tuscias, patikrinkite domenu sarasa per nauja");
+            return;
+        }
 
         int counterPraleido = 0;
         int counterNepraleido = 0;
@@ -71,12 +83,28 @@ class MainLauncher
                 results.Add("Užkrovė");
                 counterPraleido++;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine("websaitas {0} uzblokuotas", domain);
-                results.Add("Nepraleido");
-                counterNepraleido++;
+                if (e.ToString().Contains("Timeout"))
+                {
+                    Console.WriteLine("Domenas " + domain + "užtruko per ilgai, pažiūrėkite ar jis tikrai veikia");
+                    break;
+                }
+                else if (e.ToString().Contains("ERR_NAME_NOT_RESOLVED"))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.WriteLine("websaitas {0} uzblokuotas", domain);
+                    results.Add("Nepraleido");
+                    counterNepraleido++;
+                    
+                }
+
+                if (e.ToString().Contains("playwright.ps1 install"))
+                    {
+                        Console.WriteLine("Naršyklės nėra įdiegtos. Prašome kreiptis į programos kūrėją dėl papildomos informacijos. Programa neveiks tinkamai.");
+                        return;
+                    }
+                
             }
             finally
             {
@@ -98,7 +126,7 @@ class MainLauncher
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
             }
-            else if (results[i] == "Nepraleido")
+            else if (results[i] == "uzblokavo")
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
             }
@@ -112,8 +140,17 @@ class MainLauncher
         Console.ForegroundColor = ConsoleColor.White;
 
         Console.WriteLine($"\niš viso praleido svetainių: {numPraleido}%");
-        Console.WriteLine($"\niš viso užblokavo svetainių: {numNepraleido}%");        
-    }
+        Console.WriteLine($"\niš viso užblokavo svetainių: {numNepraleido}%");
+        while (true)
+        {
+
+            Console.WriteLine("Paspauskite raide B kad isteitumete is programos.");
+            string input = Console.ReadLine();
+            if (input == "b" || input == "B")
+            {
+                return;
+            }
+        }
         
-    
+    }
 }
