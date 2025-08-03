@@ -12,7 +12,7 @@ namespace Read
 
         string exeDirectory = AppContext.BaseDirectory;
 
-        string liveConfigFileName = "domains.txt";
+        string liveConfigFileName = "domenai.txt";
         string defaultConfigFileName = "domains.default.txt";
 
         public Opener()
@@ -31,9 +31,9 @@ namespace Read
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("neradome failo, 'domenai.txt', luktėlkite...");
 
-                if (File.Exists(defaultPath))
+                    if (File.Exists(defaultPath))
                 {
-                    Console.WriteLine("Kuremas naujas failas, 'domenai.txt'");
+                    Console.WriteLine("Kuriamas naujas failas, 'domenai.txt'");
                     Console.WriteLine($"You can now edit this file: {userPath}");
 
                     File.Copy(defaultPath, userPath);
@@ -50,7 +50,6 @@ namespace Read
 
         public List<string> FileOpen()
         {
-            // 1. Start with the robust structure: Check if the file exists.
             if (!File.Exists(liveConfigPath))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -69,7 +68,6 @@ namespace Read
 
             try
             {
-                // 4. Use a 'using' block to ensure the file is closed automatically.
                 using (var sr = new StreamReader(liveConfigPath))
                 {
                     string line;
@@ -111,8 +109,6 @@ namespace Read
         {
             string pattern = @"(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})";
 
-            // Ideja, veiks pagal domenu tipa, ir privalumas butu chronologiskumas, nebent nuo iki veiks, tai jeigu
-            // this would work when iterating through dict keys.. so file open  has to be changed
             List<string> UnporcessedDoms = FileOpen();
             List<string> ProcessedDoms = new List<string>();
 
