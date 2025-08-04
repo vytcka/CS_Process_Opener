@@ -1,6 +1,5 @@
 ﻿using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
-using System.IO;
 
 namespace Read
 {
@@ -53,7 +52,7 @@ namespace Read
             if (!File.Exists(liveConfigPath))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"FATAL ERROR: Configuration file could not be found at '{liveConfigPath}'");
+                Console.WriteLine($"Konfiguracija nerasta: '{liveConfigPath}'");
                 Console.ResetColor();
                 return new List<string>();
             }

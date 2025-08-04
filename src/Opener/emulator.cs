@@ -1,11 +1,7 @@
 using Microsoft.Playwright;
-using System;
 using Read;
 using System.Runtime.Versioning;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-
-
+using System.Reflection;
 
 namespace Emulator
 {
@@ -15,6 +11,17 @@ namespace Emulator
         private List<string> _domains;
         public PlaywrightEmulator()
         {
+            
+            var assemblyLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        
+        
+            var browserBinariesPath = System.IO.Path.Combine(assemblyLocation, "ms-playwright");
+
+            Console.WriteLine(browserBinariesPath + "folder to ms-playwright");
+
+      
+            Environment.SetEnvironmentVariable("PLAYWRIGHT_BROWSERS_PATH", browserBinariesPath);
+
             Opener domainRetrieval = new Opener();
 
             _domains = domainRetrieval.RegexMatcher();

@@ -16,7 +16,7 @@
 
    
   <ItemGroup>
-    <Content Include="src\Opener\ms-playwright\**\*">
+    <Content Include="*(src\Opener\ms-playwright)\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Link>ms-playwright\%(RecursiveDir)%(Filename)%(Extension)</Link>

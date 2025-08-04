@@ -1,15 +1,7 @@
-
-using System;
-using Path;
 using Read;
 using System.Runtime.Versioning;
-using ProcessStarter;
 using Emulator;
-using System.Text;
-using System.Runtime.Intrinsics.Arm;
 using Microsoft.Playwright;
-using System.Diagnostics;
-using Microsoft.Playwright.Transport.Protocol;
 
 
 [SupportedOSPlatform("windows")]
@@ -66,8 +58,16 @@ class MainLauncher
 
         if (domains.Count() == 0)
         {
-            Console.WriteLine("Domenu sarasas tuscias, patikrinkite domenu sarasa per nauja");
-            return;
+            while (true)
+            {
+                Console.WriteLine("Domenu sarasas tuscias, patikrinkite domenu sarasa per nauja");
+                Console.WriteLine("Paspauskite raide 'b' arba 'B' ir enter, kad iseitumete is programos");
+                string atsakymas = Console.ReadLine();
+                if (atsakymas == "B" || atsakymas == "b")
+                {
+                    return;
+                }
+            }
         }
 
         int counterPraleido = 0;
@@ -96,16 +96,25 @@ class MainLauncher
                     Console.WriteLine("websaitas {0} uzblokuotas", domain);
                     results.Add("Nepraleido");
                     counterNepraleido++;
-                    
+
                 }
 
                 if (e.ToString().Contains("playwright.ps1 install"))
+                {
+                    while (true)
                     {
                         Console.WriteLine("Naršyklės nėra įdiegtos. Prašome kreiptis į programos kūrėją dėl papildomos informacijos. Programa neveiks tinkamai.");
-                        return;
+                        Console.WriteLine("Paspauskite raide 'b' arba 'B' ir enter, kad iseitumete is programos");
+                        string atsakymas = Console.ReadLine();
+                        if (atsakymas == "B" || atsakymas == "b")
+                        {
+                            return;
+                        }
                     }
-                
+                }
+
             }
+
             finally
             {
                 Console.ForegroundColor = ConsoleColor.White;
@@ -151,6 +160,6 @@ class MainLauncher
                 return;
             }
         }
-        
+
     }
 }
