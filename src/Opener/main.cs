@@ -2,6 +2,7 @@ using Read;
 using System.Runtime.Versioning;
 using Emulator;
 using Microsoft.Playwright;
+using System.Linq.Expressions;
 
 
 [SupportedOSPlatform("windows")]
@@ -12,43 +13,9 @@ class MainLauncher
 
     static async Task Main(string[] args)
     {
+        Opener processedDom = new();
 
-
-        /*Browsers browserPaths = new Browsers();
-        BrowserHandler browserOpener = new BrowserHandler();
-        Opener s = new Opener();
-
-        s.FileOpen();
-
-        browserOpener.GetDomains();
-
-        string edgePath = browserPaths.bruteEdgeGetter();
-        string mozillaPath = browserPaths.bruteForceMozillaGetter();
-        string chromePath = browserPaths.bruteForceChromeGetter();
-        string operaPath = browserPaths.bruteForceOperaGetter();
-
-        if (edgePath == null || mozillaPath == null || chromePath == null || operaPath == null)
-        {
-            Console.WriteLine("blogai");
-            return;
-        }
-        else
-        {
-            Console.WriteLine(operaPath);
-            Console.WriteLine("gerai");
-        }
-
-        browserOpener.BrowserDomainOpener(edgePath);
-        browserOpener.BrowserDomainOpener(mozillaPath);
-        browserOpener.BrowserDomainOpener(chromePath);
-        browserOpener.BrowserDomainOpener(operaPath);
-    */
-        //await vars.EmulatorAsync();
-        //organizacija maine, turetu buti isdesti, kiek domenu idetoje kategorija ir hronologiskai isdelioti jas.
-
-        Opener processedDom = new Opener();
-
-        PlaywrightEmulator tests = new PlaywrightEmulator();
+        PlaywrightEmulator tests = new();
 
 
 
@@ -87,19 +54,20 @@ class MainLauncher
             {
                 if (e.ToString().Contains("Timeout"))
                 {
-                    Console.WriteLine("Domenas " + domain + "užtruko per ilgai, pažiūrėkite ar jis tikrai veikia");
-                    break;
+                    Console.WriteLine("Domenas " + domain + " per ilgai užtruko, pažiūrėkite ar jis tikrai veikia.");
+                    results.Add("neprieinamas");
+                    continue;
                 }
                 else if (e.ToString().Contains("ERR_NAME_NOT_RESOLVED"))
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.WriteLine("websaitas {0} uzblokuotas", domain);
-                    results.Add("Nepraleido");
+                    results.Add("uzblokavo");
                     counterNepraleido++;
 
                 }
 
-                if (e.ToString().Contains("playwright.ps1 install"))
+                else if (e.ToString().Contains("playwright.ps1 install"))
                 {
                     while (true)
                     {
@@ -112,6 +80,14 @@ class MainLauncher
                         }
                     }
                 }
+                else{
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine($"Įvyko netikėta klaida su domenu {domain}: {e.Message}");
+                        results.Add("Klaida (Netikėta)");
+                        counterNepraleido++;
+                    }
+            }
 
             }
 
@@ -131,26 +107,43 @@ class MainLauncher
 
         for (int i = 0; i < domains.Count; i++)
         {
-            if (results[i] == "Užkrovė")
+            try
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-            }
-            else if (results[i] == "uzblokavo")
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-            }
+                if (results[i] == "Užkrovė")
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                }
+                else if (results[i] == "uzblokavo")
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                }
 
 
-            Console.WriteLine($"- {domains[i]} ......... {results[i]}");
+                Console.WriteLine($"- {domains[i]} ......... {results[i]}");
+                Console.ForegroundColor = ConsoleColor.White;
+
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                while (true)
+                {
+                    Console.WriteLine("Perziurekite faila 'domenai.txt' nes truksta domenu.");
+                    Console.WriteLine("Paspauskite raide B arba b + enter, kad isteitumete is programos.");
+                    string input = Console.ReadLine();
+                    if (input == "b" || input == "B")
+                    {
+                        return;
+                    }
+                }
+            }
+
             Console.ForegroundColor = ConsoleColor.White;
+            }
+            Console.WriteLine($"\niš viso praleido svetainių: {numPraleido}%");
+            Console.WriteLine($"\niš viso užblokavo svetainių: {numNepraleido}%");
 
-        }
 
-        Console.ForegroundColor = ConsoleColor.White;
-
-        Console.WriteLine($"\niš viso praleido svetainių: {numPraleido}%");
-        Console.WriteLine($"\niš viso užblokavo svetainių: {numNepraleido}%");
-        while (true)
+            while (true)
         {
 
             Console.WriteLine("Paspauskite raide B kad isteitumete is programos.");
@@ -160,6 +153,5 @@ class MainLauncher
                 return;
             }
         }
-
     }
 }

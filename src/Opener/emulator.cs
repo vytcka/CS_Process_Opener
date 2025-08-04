@@ -12,12 +12,13 @@ namespace Emulator
         public PlaywrightEmulator()
         {
             
+            
             var assemblyLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         
         
             var browserBinariesPath = System.IO.Path.Combine(assemblyLocation, "ms-playwright");
 
-            Console.WriteLine(browserBinariesPath + "folder to ms-playwright");
+            Console.WriteLine("********* " + browserBinariesPath + " *********");
 
       
             Environment.SetEnvironmentVariable("PLAYWRIGHT_BROWSERS_PATH", browserBinariesPath);
