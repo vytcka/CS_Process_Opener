@@ -1,9 +1,6 @@
 using Read;
 using System.Runtime.Versioning;
 using Emulator;
-using Microsoft.Playwright;
-using System.Linq.Expressions;
-
 
 [SupportedOSPlatform("windows")]
 class MainLauncher
@@ -56,6 +53,7 @@ class MainLauncher
                 {
                     Console.WriteLine("Domenas " + domain + " per ilgai užtruko, pažiūrėkite ar jis tikrai veikia.");
                     results.Add("neprieinamas");
+                    counterNepraleido++;
                     continue;
                 }
                 else if (e.ToString().Contains("ERR_NAME_NOT_RESOLVED"))

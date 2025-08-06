@@ -16,6 +16,9 @@ namespace Read
 
         public Opener()
         {
+            //pacios pradzios kodas kuris yra naudojamas, per ji yra istraukiama dabartine direktorija kur failas randamas naudojami system IO importuotus metodus. Path.combine
+            //ir su istrauktom direktorijom mes is esmes padarom jog funkcija "IntitialiseUserConfig" ir pritarikom parametru duoemnis, kaip dabartine direktorija, ir txt failo direktorija, prilyginam
+            //jei dabartinei direktorijai yra txt failas ar nera.
             liveConfigPath = System.IO.Path.Combine(exeDirectory, liveConfigFileName);
             string defaultConfigPath = System.IO.Path.Combine(exeDirectory, defaultConfigFileName);
 
@@ -27,6 +30,7 @@ namespace Read
         {
             if (!File.Exists(userPath))
             {
+                //ieskomas domenai.txt failukas, jei nerastas (del to sauktukas dedamas kaip atvirkstinis loginis isreiskinys, !file.exists = jei failas nerandomas)
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("neradome failo, 'domenai.txt', luktėlkite...");
 
@@ -127,6 +131,7 @@ namespace Read
                     }
 
                 }
+
             }
 
 
