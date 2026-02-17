@@ -19,9 +19,6 @@ namespace Read
         // Atsarginio (šabloninio) domenų failo pavadinimas
         string defaultConfigFileName = "domains.default.txt";
 
-        // ---------------------
-        // KONSTRUKTORIUS
-        // ---------------------
         public Opener()
         {
             // Sudarome pilną kelią iki "domenai.txt"
@@ -35,9 +32,7 @@ namespace Read
             InitializeUserConfig(liveConfigPath, defaultConfigPath);
         }
 
-        // ---------------------
-        // METODAS: Failo inicializacija
-        // ---------------------
+
         private void InitializeUserConfig(string userPath, string defaultPath)
         {
             // Tikriname, ar egzistuoja pagrindinis domenų failas
@@ -46,7 +41,7 @@ namespace Read
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("neradome failo, 'domenai.txt', luktėlkite...");
 
-                // Jei randame atsarginį domenų failą – kopijuojame jį kaip naują domenai.txt
+                // Jei randame atsarginį domenų failą, kopijuojame jį kaip naują domenai.txt
                 if (File.Exists(defaultPath))
                 {
                     Console.WriteLine("Kuriamas naujas failas, 'domenai.txt'");
@@ -57,7 +52,7 @@ namespace Read
                 }
                 else
                 {
-                    // Jei atsarginio failo nėra – sukuriame naują failą su komentaru-instrukcija
+                    // Jei atsarginio failo nėra, sukuriame naują failą su komentaru-instrukcija
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("Pranešame, jog domenu failo nera direkotryjoje, pridedame txt faila");
 
@@ -72,12 +67,10 @@ namespace Read
             }
         }
 
-        // ---------------------
-        // METODAS: Nuskaito domenus iš failo
-        // ---------------------
+
         public List<string> FileOpen()
         {
-            // Jei failas neegzistuoja – pranešame vartotojui ir grąžiname tuščią sąrašą
+            // Jei failas neegzistuoja, pranešame vartotojui ir grąžiname tuščią sąrašą
             if (!File.Exists(liveConfigPath))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -88,8 +81,6 @@ namespace Read
 
             var domains = new List<string>();
 
-            // Raktiniai žodžiai, žymintys kategorijų antraštes domenų sąraše
-            // Tokias eilutes praleisime, nes jos nėra realūs domenai
             var domainTypes = new List<string>
             {
                 "Pornogr", "Erotik", "Smurt", "Lošim", "ginkl",
@@ -98,7 +89,7 @@ namespace Read
 
             try
             {
-                // Atidarome failą skaitymui
+               
                 using (var sr = new StreamReader(liveConfigPath))
                 {
                     string line;
@@ -144,12 +135,9 @@ namespace Read
             return domains;
         }
 
-        // ---------------------
-        // METODAS: Regex filtravimas
-        // ---------------------
+    
         public List<string> RegexMatcher()
         {
-            // Regex šablonas, skirtas išgauti domeno pavadinimą be protokolo (http, https) ir www
             string pattern = @"(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+\.[a-zA-Z]{2,})";
 
             // Nuskaitome visus domenus iš failo
@@ -178,9 +166,7 @@ namespace Read
             return ProcessedDoms;
         }
 
-        // ---------------------
-        // METODAS: Iš registro reikšmės ištraukia failo kelią
-        // ---------------------
+
         public string regValueToString(string regValue)
         {
             // Randame pirmos kabutės indeksą
@@ -197,7 +183,6 @@ namespace Read
             }
             else
             {
-                // Jei kabučių nerasta – pranešame vartotojui
                 Console.WriteLine("No quoted path found.");
                 return "";
             }
